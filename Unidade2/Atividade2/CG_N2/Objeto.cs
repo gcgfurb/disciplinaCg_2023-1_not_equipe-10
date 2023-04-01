@@ -61,7 +61,7 @@ namespace gcgcg
 #if CG_OpenGL && !CG_DirectX
       GL.BindVertexArray(_vertexArrayObject_sruEixos);
       _shaderBranco.Use();
-      GL.DrawArrays(PrimitiveType.LineLoop, 0, 4); //fixme: teamanho do vertice e não 4
+      GL.DrawArrays(primitivaTipo, 0, pontosLista.Count);
 #elif CG_DirectX && !CG_OpenGL
       Console.WriteLine(" .. Coloque aqui o seu código em DirectX");
 #elif (CG_DirectX && CG_OpenGL) || (!CG_DirectX && !CG_OpenGL)
