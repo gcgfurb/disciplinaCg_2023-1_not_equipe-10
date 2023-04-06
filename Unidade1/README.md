@@ -16,7 +16,7 @@ Objetivo: identificar os conceitos gerais da Computação Gráfica e as principa
 ## [Atividades - Aula](Atividade1/README.md "Atividades - Aula")  
 
 <!-- 
-[FIXME:]
+TODO:  
 Pedir para cada aluno escolher uma única palavra que representa o assunto apresentando, que pode estar ou não no material mostrado.
 -->
 
@@ -39,7 +39,7 @@ Arco de Maguerez
 -->
 
 <!--
-[FIXME: arrumar as fontes bibliográficas]  
+TODO: arrumar as fontes bibliográficas  
 ### Principais Referências Bibliográficas​  
 
 - DEITEL, Paul J; DEITEL, Harvey M. **[Java: como programar.](https://bu.furb.br/consulta/portalConsulta/recuperaMfnCompleto.php?menu=rapida&CdMFN=341002)** 8. ed. São Paulo: Pearson, 2010. xxix, 1144 p, il.​  
@@ -51,6 +51,6 @@ Arco de Maguerez
 ## ⏭ [Unidade 2)](../Unidade2/README.md "Unidade 2")  
 
 <!--
-[FIXME: arrumar as fontes bibliográficas]  
+TODO: arrumar as fontes bibliográficas  
 ## Principais Referências Bibliográficas​
 -->
