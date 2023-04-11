@@ -149,7 +149,7 @@ namespace gcgcg
       return pontosLista[pontosLista.Count - 1];
     }
 
-    /* [FIXME: destroctor]    
+    /* FIXME: destroctor]    
         protected override void OnUnload()
         {
           GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
