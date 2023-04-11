@@ -12,6 +12,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Windowing.Desktop;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace gcgcg
 {
@@ -19,12 +20,12 @@ namespace gcgcg
   {
     private readonly float[] _sruEixos =
     {
-       0.6f,  0.0f,  0.0f, // X+
+       0.5f,  0.0f,  0.0f, // X+
        0.0f,  0.0f,  0.0f, // X-
-       0.0f,  0.6f,  0.0f, // Y+
+       0.0f,  0.5f,  0.0f, // Y+
        0.0f,  0.0f,  0.0f, // Y-
-       0.0f,  0.0f,  0.6f, // Z+
-       0.0f,  0.0f, -0.6f, // Z-
+       0.0f,  0.0f,  0.5f, // Z+
+       0.0f,  0.0f, -0.5f, // Z-
     };
 
     private int _vertexBufferObject_sruEixos;
@@ -38,6 +39,10 @@ namespace gcgcg
     private Objeto objetoSelecionado = null;
     private char objetoId = '@';
     private Objeto objetoNovo = null;
+    private double linhaY = 0;
+    private double linhaX = 0;
+    private double linhaTamanho = 0.5;
+    private double linhaAngulo = 45;
 
     public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
            : base(gameWindowSettings, nativeWindowSettings)
@@ -48,7 +53,12 @@ namespace gcgcg
     {
       base.OnLoad();
 
+      Redesenhar();
+    }
+
+    public void Redesenhar() {
       GL.ClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+      GL.Clear(ClearBufferMask.ColorBufferBit);
       
       // Eixos
       _vertexBufferObject_sruEixos = GL.GenBuffer();
@@ -62,12 +72,18 @@ namespace gcgcg
       _shaderVerde = new Shader("Shaders/shader.vert", "Shaders/shaderVerde.frag");
       _shaderAzul = new Shader("Shaders/shader.vert", "Shaders/shaderAzul.frag");
       
-      var circulo = new Circulo(objetoId, null);
-      objetosLista.Add(circulo);
-      circulo.Atualizar();
+      objetosLista.Clear();
+      objetoNovo = new Objeto(objetoId, null, PrimitiveType.Lines);
+      objetosLista.Add(objetoNovo);
+      objetoNovo.PontosAdicionar(new Ponto4D(linhaX, linhaY));
+      var segundoPonto = Matematica.GerarPtosCirculo(linhaAngulo, linhaTamanho);
+      segundoPonto.X += linhaX;
+      objetoNovo.PontosAdicionar(segundoPonto);
       
+      objetoNovo.Atualizar();
       objetoSelecionado = objetoNovo;
       objetoNovo = null;
+      SwapBuffers();
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -93,6 +109,36 @@ namespace gcgcg
       if (input.IsKeyDown(Keys.Escape))
       {
         Close();
+      } else if (input.IsKeyDown(Keys.Q))
+      {
+        linhaX -= 0.01;
+        Thread.Sleep(50);
+        Redesenhar();
+      } else if (input.IsKeyDown(Keys.E))
+      {
+        linhaX += 0.01;
+        Thread.Sleep(50);
+        Redesenhar();
+      } else if (input.IsKeyDown(Keys.A))
+      {
+        linhaTamanho -= 0.01;
+        Thread.Sleep(50);
+        Redesenhar();
+      } else if (input.IsKeyDown(Keys.S))
+      {
+        linhaTamanho += 0.01;
+        Thread.Sleep(50);
+        Redesenhar();
+      } else if (input.IsKeyDown(Keys.Z))
+      {
+        linhaAngulo -= 1;
+        Thread.Sleep(50);
+        Redesenhar();
+      } else if (input.IsKeyDown(Keys.X))
+      {
+        linhaAngulo += 1;
+        Thread.Sleep(50);
+        Redesenhar();
       }
     }
 

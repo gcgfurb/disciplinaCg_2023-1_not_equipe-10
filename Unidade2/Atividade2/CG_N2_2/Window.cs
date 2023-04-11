@@ -12,6 +12,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Windowing.Desktop;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace gcgcg
 {
@@ -69,6 +70,7 @@ namespace gcgcg
       _shaderVerde = new Shader("Shaders/shader.vert", "Shaders/shaderVerde.frag");
       _shaderAzul = new Shader("Shaders/shader.vert", "Shaders/shaderAzul.frag");
       
+      objetosLista.Clear();
       objetoNovo = new Objeto(objetoId, null, tipoDesenho);
       objetosLista.Add(objetoNovo);
       objetoNovo.PontosAdicionar(new Ponto4D(-0.5, 0.5));
@@ -106,6 +108,7 @@ namespace gcgcg
         Close();
       } else if (input.IsKeyDown(Keys.Space))
       {
+        Thread.Sleep(100);
         switch (tipoDesenho)
         {
           case PrimitiveType.Points:
@@ -121,23 +124,14 @@ namespace gcgcg
             tipoDesenho = PrimitiveType.Triangles;
           break;
           case PrimitiveType.Triangles:
+            tipoDesenho = PrimitiveType.TriangleStrip;
+          break;
+          case PrimitiveType.TriangleStrip:
+            tipoDesenho = PrimitiveType.TriangleFan;
+          break;
+          case PrimitiveType.TriangleFan:
             tipoDesenho = PrimitiveType.Points;
           break;
-          // case PrimitiveType.Points:
-          //   tipoDesenho = PrimitiveType.Lines;
-          // break;
-          // case PrimitiveType.Points:
-          //   tipoDesenho = PrimitiveType.Lines;
-          // break;
-          // case PrimitiveType.Points:
-          //   tipoDesenho = PrimitiveType.Lines;
-          // break;
-          // case PrimitiveType.Points:
-          //   tipoDesenho = PrimitiveType.Lines;
-          // break;
-          // case PrimitiveType.Points:
-          //   tipoDesenho = PrimitiveType.Lines;
-          // break;
         }
         Redesenhar(tipoDesenho);
       }

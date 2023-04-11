@@ -1,14 +1,13 @@
 using gcgcg;
+using CG_Biblioteca;
 
-public class Circulo {
-    public Circulo(int espacoBolinhas, double raio)
+internal class Circulo : Objeto {
+    public Circulo(char rotulo, Objeto paiRef) : base(rotulo, paiRef)
     {
-        // var circulo = new Objeto('A', null);
-        // // for (int i = 0; i < 360; i+=10)
-        // // {
-        //     var ponto = Matematica.GerarPtosCirculo(50, 1);
-        //     objetoNovo.PontosAdicionar(ponto);
-        // // }
-        // circulo.Atualizar();
+      for (int i = 0; i < 360; i+=5)
+      {
+        Ponto4D ponto = Matematica.GerarPtosCirculo(i, 0.25);
+        this.PontosAdicionar(ponto);
+      }
     }
 }
