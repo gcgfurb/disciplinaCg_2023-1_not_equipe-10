@@ -1,1 +1,0 @@
-/Users/daltonreis/GitHub/disciplinas/CG/disciplinaCgPrivado/Unidade2/Atividade2/_._CG_N2/Circulo.cs
