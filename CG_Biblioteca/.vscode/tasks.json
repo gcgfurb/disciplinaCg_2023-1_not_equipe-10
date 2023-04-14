@@ -1,79 +1,28 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/CG_Biblioteca.csproj"
-            ],
-            "problemMatcher": "$tsc",
-            "group": "build"
-        },
-        {
-            "label": "publishDebug",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/CG_Biblioteca.csproj"
-            ],
-            "problemMatcher": "$tsc"
-        },
-        {
-            "label": "publishRelease_win10-x64",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "-c",
-                "release",
-                "-r",
-                "win10-x64",
-                "${workspaceFolder}/CG_Biblioteca.csproj"
-            ],
-            "problemMatcher": "$tsc"
-        },
-        {
-            "label": "publishRelease_ubuntu.16.10-x64",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "-c",
-                "release",
-                "-r",
-                "ubuntu.16.10-x64",
-                "${workspaceFolder}/CG_Biblioteca.csproj"
-            ],
-            "problemMatcher": "$tsc"
-        },
-        {
-            "label": "publishRelease_osx-x64",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "-c",
-                "release",
-                "-r",
-                "osx-x64",
-                "${workspaceFolder}/CG_Biblioteca.csproj"
-            ],
-            "problemMatcher": "$tsc"
-        },
-        {
-            "label": "watch",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "${workspaceFolder}/CG_Biblioteca.csproj"
-            ],
-            "problemMatcher": "$tsc"
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/CG_Biblioteca.csproj",
+        "/property:GenerateFullPaths=true"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    { // TODO: precisa?
+      "label": "watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/CG_Biblioteca.csproj"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
 }

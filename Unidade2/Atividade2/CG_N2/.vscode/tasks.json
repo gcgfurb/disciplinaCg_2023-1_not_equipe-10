@@ -8,20 +8,93 @@
       "args": [
         "build",
         "${workspaceFolder}/CG_N2.csproj",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
+        "/property:GenerateFullPaths=true"
       ],
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "publish",
+      "label": "publishDebug",
       "command": "dotnet",
       "type": "process",
       "args": [
         "publish",
         "${workspaceFolder}/CG_N2.csproj",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
+        "/property:GenerateFullPaths=true"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publishRelease_win10-x64",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "-c",
+        "release",
+        "-r",
+        "win10-x64",
+        "${workspaceFolder}/CG_N2.csproj",
+        "/property:GenerateFullPaths=true"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publishRelease_win11-x64",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "-c",
+        "release",
+        "-r",
+        "win11-x64",
+        "${workspaceFolder}/CG_N2.csproj",
+        "/property:GenerateFullPaths=true"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publishRelease_ubuntu.16.10-x64",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "-c",
+        "release",
+        "-r",
+        "ubuntu.16.10-x64",
+        "${workspaceFolder}/CG_N2.csproj",
+        "/property:GenerateFullPaths=true"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publishRelease_osx-x64",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "-c",
+        "release",
+        "-r",
+        "osx-x64",
+        "${workspaceFolder}/CG_N2.csproj",
+        "/property:GenerateFullPaths=true"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publishRelease_osx-arm64",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "-c",
+        "release",
+        "-r",
+        "osx-arm64",
+        "${workspaceFolder}/CG_N2.csproj",
+        "/property:GenerateFullPaths=true"
       ],
       "problemMatcher": "$msCompile"
     },
