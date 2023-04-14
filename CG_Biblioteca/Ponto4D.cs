@@ -1,7 +1,3 @@
-/**
-  Autor: Dalton Solano dos Reis
-**/
-
 #define CG_Debug
 
 namespace CG_Biblioteca
