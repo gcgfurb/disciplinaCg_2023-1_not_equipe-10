@@ -10,6 +10,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Windowing.Desktop;
 using System;
 using OpenTK.Mathematics;
+using System.Collections.Generic;
 
 //FIXME: padrão Singleton
 
@@ -86,13 +87,13 @@ namespace gcgcg
       #endregion
 
       // #region Objeto: polígono qualquer  
-      // List<Ponto4D> pontosPoligono = new List<Ponto4D>();
-      // pontosPoligono.Add(new Ponto4D(0.25, 0.25));
-      // pontosPoligono.Add(new Ponto4D(0.75, 0.25));
-      // pontosPoligono.Add(new Ponto4D(0.75, 0.75));
-      // pontosPoligono.Add(new Ponto4D(0.50, 0.50));
-      // pontosPoligono.Add(new Ponto4D(0.25, 0.75));
-      // objetoSelecionado = new Poligono(mundo, ref rotuloAtual, pontosPoligono);
+      List<Ponto4D> pontosPoligono = new List<Ponto4D>();
+      pontosPoligono.Add(new Ponto4D(0.25, 0.25));
+      pontosPoligono.Add(new Ponto4D(0.75, 0.25));
+      pontosPoligono.Add(new Ponto4D(0.75, 0.75));
+      pontosPoligono.Add(new Ponto4D(0.50, 0.50));
+      pontosPoligono.Add(new Ponto4D(0.25, 0.75));
+      objetoSelecionado = new Poligono(mundo, ref rotuloAtual, pontosPoligono);
       // #endregion
       // #region NÃO USAR: declara um objeto filho ao polígono
       // objetoSelecionado = new Ponto(objetoSelecionado, ref rotuloAtual, new Ponto4D(0.50, 0.75));
