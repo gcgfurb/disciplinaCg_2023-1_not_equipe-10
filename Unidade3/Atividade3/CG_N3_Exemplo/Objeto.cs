@@ -98,6 +98,8 @@ namespace gcgcg
     public void Desenhar()
     {
 #if CG_OpenGL && !CG_DirectX
+      GL.PointSize(primitivaTamanho);
+      
       GL.BindVertexArray(_vertexArrayObject);
 
       _shaderObjeto.SetMatrix4("transform", matriz.ObterDadosOpenTK());
