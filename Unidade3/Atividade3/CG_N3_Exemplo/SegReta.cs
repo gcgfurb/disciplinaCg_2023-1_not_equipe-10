@@ -7,6 +7,9 @@ namespace gcgcg
 {
   internal class SegReta : Objeto
   {
+    public SegReta(Objeto paiRef, ref char _rotulo) : 
+      this(paiRef, ref _rotulo, new Ponto4D(0.5,0.5), new Ponto4D(-0.5,-0.5)) {}
+
     public SegReta(Objeto paiRef, ref char _rotulo, Ponto4D ptoIni, Ponto4D ptoFim) : base(paiRef, ref _rotulo)
     {
       PrimitivaTipo = PrimitiveType.Lines;

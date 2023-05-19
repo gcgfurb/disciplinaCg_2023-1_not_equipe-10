@@ -9,11 +9,8 @@ namespace gcgcg
   {
     private double raio;
 
-    // FIXME: constructor chamar outro constructor
-    // public Circulo(Objeto paiRef, double raio) : base(paiRef)
-    // {
-    //   Circulo(paiRef,raio,new Ponto4D());
-    // }
+    public Circulo(Objeto paiRef, ref char _rotulo) : 
+      this (paiRef, ref _rotulo,0.1,new Ponto4D()) {}
 
     public Circulo(Objeto paiRef, ref char _rotulo, double _raio, Ponto4D ptoDeslocamento) : base(paiRef,ref _rotulo)
     {

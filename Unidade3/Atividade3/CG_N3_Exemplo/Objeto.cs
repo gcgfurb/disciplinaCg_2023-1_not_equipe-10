@@ -10,10 +10,11 @@ using OpenTK.Mathematics;
 
 namespace gcgcg
 {
-  internal class Objeto
+  internal class Objeto  // TODO: deveria ser uma class abstract ..??
   {
     // Objeto
     private readonly char rotulo;
+    public char Rotulo { get => rotulo; }
     protected Objeto paiRef;
     private List<Objeto> objetosLista = new List<Objeto>();
     private PrimitiveType primitivaTipo = PrimitiveType.LineLoop;
@@ -94,23 +95,25 @@ namespace gcgcg
       GL.EnableVertexAttribArray(0);
     }
 
-// FIXME: falta para Transformações Geométricas PushMatrix e PopMatrix - Grafo de Cena
     public void Desenhar()
     {
 #if CG_OpenGL && !CG_DirectX
       GL.PointSize(primitivaTamanho);
-      
+
       GL.BindVertexArray(_vertexArrayObject);
 
-      _shaderObjeto.SetMatrix4("transform", matriz.ObterDadosOpenTK());
-
-      _shaderObjeto.Use();
-      GL.DrawArrays(primitivaTipo, 0, pontosLista.Count);
+      if (paiRef != null)
+      {
+        matrizGlobal = paiRef.matriz.MultiplicarMatriz(matriz); //FIXME: não funciona para Netos (recurssivamente)
+        _shaderObjeto.SetMatrix4("transform", matrizGlobal.ObterDadosOpenTK());
+        _shaderObjeto.Use();
+        GL.DrawArrays(primitivaTipo, 0, pontosLista.Count);
 #elif CG_DirectX && !CG_OpenGL
       Console.WriteLine(" .. Coloque aqui o seu código em DirectX");
 #elif (CG_DirectX && CG_OpenGL) || (!CG_DirectX && !CG_OpenGL)
       Console.WriteLine(" .. ERRO de Render - escolha OpenGL ou DirectX !!");
 #endif
+      }
       for (var i = 0; i < objetosLista.Count; i++)
       {
         objetosLista[i].Desenhar();
@@ -158,6 +161,19 @@ namespace gcgcg
         }
       }
       return null;
+    }
+
+    public Objeto GrafocenaBuscaProximo(Objeto objetoAtual)
+    {
+      objetoAtual = GrafocenaBusca(Utilitario.charProximo(objetoAtual.rotulo));
+      if (objetoAtual != null)
+      {
+        return objetoAtual;
+      }
+      else
+      {
+        return GrafocenaBusca(Utilitario.charProximo('@'));
+      }
     }
 
     public void GrafocenaImprimir(String idt)
@@ -217,7 +233,7 @@ namespace gcgcg
     }
     public void MatrizRotacaoEixo(double angulo)
     {
-      switch (eixoRotacao)  // FIXME: ainda não uso no exemplo
+      switch (eixoRotacao)  // TODO: ainda não uso no exemplo
       {
         case 'x':
           matrizTmpRotacao.AtribuirRotacaoX(Transformacao4D.DEG_TO_RAD * angulo);

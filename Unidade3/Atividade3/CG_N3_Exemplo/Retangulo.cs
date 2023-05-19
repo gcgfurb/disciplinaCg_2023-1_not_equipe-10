@@ -7,6 +7,9 @@ namespace gcgcg
 {
   internal class Retangulo : Objeto
   {
+    public Retangulo(Objeto paiRef, ref char _rotulo) : 
+      this(paiRef, ref _rotulo, new Ponto4D(-0.5,-0.5), new Ponto4D(0.5,0.5)) {}
+
     public Retangulo(Objeto paiRef, ref char _rotulo, Ponto4D ptoInfEsq, Ponto4D ptoSupDir) : base(paiRef, ref _rotulo)
     {
       PrimitivaTipo = PrimitiveType.Points;

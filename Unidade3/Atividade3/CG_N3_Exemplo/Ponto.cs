@@ -7,6 +7,9 @@ namespace gcgcg
 {
   internal class Ponto : Objeto
   {
+    public Ponto(Objeto paiRef, ref char _rotulo) : 
+      this(paiRef, ref _rotulo, new Ponto4D()) {}
+
     public Ponto(Objeto paiRef, ref char _rotulo, Ponto4D pto) : base(paiRef, ref _rotulo)
     {
       PrimitivaTipo = PrimitiveType.Points;
