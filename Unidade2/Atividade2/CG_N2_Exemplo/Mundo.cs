@@ -1,7 +1,7 @@
 ﻿#define CG_Gizmo  // debugar gráfico.
 #define CG_OpenGL // render OpenGL.
-//#define CG_DirectX // render DirectX.
-// #define CG_Privado // código do professor.
+// #define CG_DirectX // render DirectX.
+#define CG_Privado // código do professor.
 
 using CG_Biblioteca;
 using OpenTK.Graphics.OpenGL4;
@@ -18,9 +18,9 @@ namespace gcgcg
 {
   public class Mundo : GameWindow
   {
-    private List<Objeto> objetosLista = new List<Objeto>();
+    Objeto mundo;
+    private char rotuloAtual = '?';
     private Objeto objetoSelecionado = null;
-    private char rotulo = '@';
 
     private readonly float[] _sruEixos =
     {
@@ -42,33 +42,41 @@ namespace gcgcg
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
            : base(gameWindowSettings, nativeWindowSettings)
     {
+      mundo = new Objeto(null, ref rotuloAtual);
     }
 
-    private void ObjetoNovo(Objeto objeto, Objeto objetoFilho = null)
+    private void Diretivas()
     {
-      if (objetoFilho == null)
-      {
-        objetosLista.Add(objeto);
-        objeto.Rotulo = rotulo = Utilitario.charProximo(rotulo);
-        objeto.ObjetoAtualizar();
-        objetoSelecionado = objeto;
-      }
-      else
-      {
-        objeto.FilhoAdicionar(objetoFilho);
-        objetoFilho.Rotulo = rotulo = Utilitario.charProximo(rotulo);
-        objetoFilho.ObjetoAtualizar();
-        objetoSelecionado = objetoFilho;
-      }
+#if DEBUG
+      Console.WriteLine("Debug version");
+#endif      
+#if RELEASE
+    Console.WriteLine("Release version");
+#endif      
+#if CG_Gizmo      
+      Console.WriteLine("#define CG_Gizmo  // debugar gráfico.");
+#endif
+#if CG_OpenGL      
+      Console.WriteLine("#define CG_OpenGL // render OpenGL.");
+#endif
+#if CG_DirectX      
+      Console.WriteLine("#define CG_DirectX // render DirectX.");
+#endif
+#if CG_Privado      
+      Console.WriteLine("#define CG_Privado // código do professor.");
+#endif
+      Console.WriteLine("__________________________________ \n");
     }
 
     protected override void OnLoad()
     {
       base.OnLoad();
 
+      Diretivas();
+
       GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-      // Eixos
+      #region Eixos: SRU  
       _vertexBufferObject_sruEixos = GL.GenBuffer();
       GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject_sruEixos);
       GL.BufferData(BufferTarget.ArrayBuffer, _sruEixos.Length * sizeof(float), _sruEixos, BufferUsageHint.StaticDraw);
@@ -79,58 +87,49 @@ namespace gcgcg
       _shaderVermelha = new Shader("Shaders/shader.vert", "Shaders/shaderVermelha.frag");
       _shaderVerde = new Shader("Shaders/shader.vert", "Shaders/shaderVerde.frag");
       _shaderAzul = new Shader("Shaders/shader.vert", "Shaders/shaderAzul.frag");
-
-      Objeto objetoNovo = null;
+      #endregion
 
       #region Objeto: polígono qualquer  
-      objetoNovo = new Poligono(null);
-      objetoNovo.PontosAdicionar(new Ponto4D(0.25, 0.25));
-      objetoNovo.PontosAdicionar(new Ponto4D(0.75, 0.25));
-      objetoNovo.PontosAdicionar(new Ponto4D(0.75, 0.75));
-      objetoNovo.PontosAdicionar(new Ponto4D(0.50, 0.50));
-      objetoNovo.PontosAdicionar(new Ponto4D(0.25, 0.75));
-      ObjetoNovo(objetoNovo); objetoNovo = null;
+      List<Ponto4D> pontosPoligono = new List<Ponto4D>();
+      pontosPoligono.Add(new Ponto4D(0.25, 0.25));
+      pontosPoligono.Add(new Ponto4D(0.75, 0.25));
+      pontosPoligono.Add(new Ponto4D(0.75, 0.75));
+      pontosPoligono.Add(new Ponto4D(0.50, 0.50));
+      pontosPoligono.Add(new Ponto4D(0.25, 0.75));
+      objetoSelecionado = new Poligono(mundo, ref rotuloAtual, pontosPoligono);
       #endregion
       #region NÃO USAR: declara um objeto filho ao polígono
-      objetoNovo = new Ponto(null, new Ponto4D(0.50, 0.75));
-      ObjetoNovo(objetosLista[0], objetoNovo); objetoNovo = null;
+      objetoSelecionado = new Ponto(objetoSelecionado, ref rotuloAtual, new Ponto4D(0.50, 0.75));
+      objetoSelecionado.ToString();
       #endregion
 
       #region Objeto: retângulo  
-      objetoNovo = new Retangulo(null, new Ponto4D(-0.25, 0.25), new Ponto4D(-0.75, 0.75));
-      objetoNovo.PrimitivaTipo = PrimitiveType.LineLoop;
-      ObjetoNovo(objetoNovo); objetoNovo = null;
+      objetoSelecionado = new Retangulo(mundo, ref rotuloAtual, new Ponto4D(-0.25, 0.25), new Ponto4D(-0.75, 0.75));
+      objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
       #endregion
 
       #region Objeto: segmento de reta  
-      objetoNovo = new SegReta(null, new Ponto4D(-0.25, -0.25), new Ponto4D(-0.75, -0.75));
-      ObjetoNovo(objetoNovo); objetoNovo = null;
+      objetoSelecionado = new SegReta(mundo, ref rotuloAtual, new Ponto4D(-0.25, -0.25), new Ponto4D(-0.75, -0.75));
       #endregion
 
       #region Objeto: ponto  
-      objetoNovo = new Ponto(null, new Ponto4D(0.25, -0.25));
-      objetoNovo.PrimitivaTipo = PrimitiveType.Points;
-      objetoNovo.PrimitivaTamanho = 10;
-      ObjetoNovo(objetoNovo); objetoNovo = null;
+      objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(0.25, -0.25));
+      objetoSelecionado.PrimitivaTipo = PrimitiveType.Points;
+      objetoSelecionado.PrimitivaTamanho = 10;
       #endregion
 
 #if CG_Privado
       #region Objeto: circulo  
-      objetoNovo = new Circulo(null, 0.2, new Ponto4D());
-      objetoNovo.shaderCor = new Shader("Shaders/shader.vert", "Shaders/shaderAmarela.frag");
-      ObjetoNovo(objetoNovo); objetoNovo = null;
+      objetoSelecionado = new Circulo(mundo, ref rotuloAtual, 0.2, new Ponto4D());
+      objetoSelecionado.shaderCor = new Shader("Shaders/shader.vert", "Shaders/shaderAmarela.frag");
       #endregion
 
       #region Objeto: SrPalito  
-      objetoNovo = new SrPalito(null);
-      ObjetoNovo(objetoNovo); objetoNovo = null;
-      SrPalito objSrPalito = objetoSelecionado as SrPalito;
+      objetoSelecionado = new SrPalito(mundo, ref rotuloAtual);
       #endregion
 
       #region Objeto: Spline
-      objetoNovo = new Spline(null);
-      ObjetoNovo(objetoNovo); objetoNovo = null;
-      Spline objSpline = objetoSelecionado as Spline;
+      objetoSelecionado = new Spline(mundo, ref rotuloAtual);
       #endregion
 #endif
 
@@ -145,9 +144,7 @@ namespace gcgcg
 #if CG_Gizmo      
       Sru3D();
 #endif
-      for (var i = 0; i < objetosLista.Count; i++)
-        objetosLista[i].Desenhar();
-
+      mundo.Desenhar();
       SwapBuffers();
     }
 
@@ -178,26 +175,8 @@ namespace gcgcg
           {
             if (input.IsKeyPressed(Keys.Space))
             {
-              if (objetoSelecionado == null)
-                Console.WriteLine("objetoSelecionado: NULL!");
-              else if (objetosLista.Count == 0)
-                Console.WriteLine("objetoLista: vazia!");
-              else
-              {
-                int ind = 0;
-                foreach (var objetoNovo in objetosLista)
-                {
-                  if (objetoNovo == objetoSelecionado)
-                  {
-                    ind++;
-                    if (ind >= objetosLista.Count)
-                      ind = 0;
-                    break;
-                  }
-                  ind++;
-                }
-                objetoSelecionado = objetosLista[ind];
-              }
+              objetoSelecionado = objetoSelecionado.GrafocenaBusca('B');
+              objetoSelecionado.ToString();
             }
             else
             {
@@ -251,10 +230,7 @@ namespace gcgcg
 
     protected override void OnUnload()
     {
-      foreach (var objeto in objetosLista)
-      {
-        objeto.OnUnload();
-      }
+      mundo.OnUnload();
 
       GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
       GL.BindVertexArray(0);

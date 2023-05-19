@@ -4,6 +4,7 @@
 
 using CG_Biblioteca;
 using OpenTK.Graphics.OpenGL4;
+using System;
 using System.Collections.Generic;
 
 namespace gcgcg
@@ -11,10 +12,8 @@ namespace gcgcg
   internal class Objeto
   {
     // Objeto
-    protected char rotulo;
-    public char Rotulo { get => rotulo; set => rotulo = value; }
+    private readonly char rotulo;
     protected Objeto paiRef;
-    // public Objeto PaiRef { get => paiRef; }
     private List<Objeto> objetosLista = new List<Objeto>();
     private PrimitiveType primitivaTipo = PrimitiveType.LineLoop;
     public PrimitiveType PrimitivaTipo { get => primitivaTipo; set => primitivaTipo = value; }
@@ -23,15 +22,38 @@ namespace gcgcg
     private Shader _shaderCor = new Shader("Shaders/shader.vert", "Shaders/shaderBranca.frag");
     public Shader shaderCor { set => _shaderCor = value; }
 
-    // Vértices do objeto
+    // Vértices do objeto TODO: o objeto mundo deveria ter estes atributos abaixo?
     protected List<Ponto4D> pontosLista = new List<Ponto4D>();
     private int _vertexBufferObject;
     private int _vertexArrayObject;
 
-    public Objeto(Objeto paiRef)
+    // BBox do objeto
+    private BBox bBox = new BBox();
+    public BBox Bbox()  // FIXME: readonly
     {
-      this.rotulo = '@';
+      return bBox;
+    }
+
+    public Objeto(Objeto paiRef, ref char _rotulo, Objeto objetoFilho = null)
+    {
       this.paiRef = paiRef;
+      rotulo = _rotulo = Utilitario.charProximo(_rotulo);
+      if (paiRef != null)
+      {
+        ObjetoNovo(objetoFilho);
+      }
+    }
+
+    private void ObjetoNovo(Objeto objetoFilho)
+    {
+      if (objetoFilho == null)
+      {
+        paiRef.objetosLista.Add(this);
+      }
+      else
+      {
+        paiRef.FilhoAdicionar(objetoFilho);
+      }
     }
 
     public void ObjetoAtualizar()
@@ -45,6 +67,7 @@ namespace gcgcg
         vertices[i + 2] = (float)pontosLista[ptoLista].Z;
         ptoLista++;
       }
+      bBox.Atualizar(pontosLista);
 
       _vertexBufferObject = GL.GenBuffer();
       GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
@@ -78,85 +101,44 @@ namespace gcgcg
       this.objetosLista.Add(filho);
     }
 
-    // public void FilhoRemover(Objeto filho)
-    // {
-    //   this.objetosLista.Remove(filho);
-    // }
-
-    // public void GrafocenaRemover()
-    // {
-    //   for (var i = 0; i < objetosLista.Count; i++)
-    //   {
-    //     objetosLista[i].GrafocenaRemover();
-    //   }
-    //   objetosLista.Clear();
-    // }
-
-    // public void GrafocenaToString()
-    // {
-    //   Console.WriteLine(this);
-    //   for (var i = 0; i < objetosLista.Count; i++)
-    //   {
-    //     Console.WriteLine(objetosLista[i]);
-    //   }
-    // }
-
-    // public bool GrafocenaRemoverPoligonoVazio()
-    // {
-    //   for (var i = 0; i < objetosLista.Count; i++)
-    //   {
-    //     if (objetosLista[i].GrafocenaRemoverPoligonoVazio())
-    //     {
-    //       objetosLista.RemoveAt(i);
-    //     }
-    //   }
-    //   if (PontosVazio())
-    //   {
-    //     return true;
-    //   }
-    //   return false;
-    // }
-
-    // public void PrimitivaTipoTroca()
-    // {
-    //   if (primitivaTipo == PrimitiveType.LineLoop)
-    //     primitivaTipo = PrimitiveType.LineStrip;
-    //   else
-    //     primitivaTipo = PrimitiveType.LineLoop;
-    // }
+    public Ponto4D PontosId(int id)
+    {
+      return pontosLista[id];
+    }
 
     public void PontosAdicionar(Ponto4D pto)
     {
       pontosLista.Add(pto);
     }
 
-    // public void PontosRemoverUltimo()
-    // {
-    //   pontosLista.RemoveAt(pontosLista.Count - 1);
-    // }
-
-    // protected bool PontosVazio()
-    // {
-    //   if (pontosLista.Count == 0)
-    //   {
-    //     return true;
-    //   }
-    //   return false;
-    // }
-
-    public Ponto4D PontosId(int id)
-    {
-      return pontosLista[id];
-    }
-
-    // public Ponto4D PontosUltimo()
-    // {
-    //   return pontosLista[pontosLista.Count - 1];
-    // }
-
     public void PontosAlterar(Ponto4D pto, int posicao)
     {
       pontosLista[posicao] = pto;
+    }
+
+    public Objeto GrafocenaBusca(char _rotulo) {
+      if (rotulo == _rotulo)
+      {
+        return this;
+      }
+      foreach (var objeto in objetosLista)
+      {
+        var obj = objeto.GrafocenaBusca(_rotulo);
+        if (obj != null)
+        {
+          return obj;
+        }
+      }
+      return null;
+    }
+
+    public void GrafocenaImprimir(String idt)
+    {
+      System.Console.WriteLine(idt + rotulo);
+      foreach (var objeto in objetosLista)
+      {
+        objeto.GrafocenaImprimir(idt + "  ");
+      }
     }
 
     public void OnUnload()
@@ -189,6 +171,7 @@ namespace gcgcg
         string.Format("{0,10}", pontosLista[i].Z) + " | " +
         string.Format("{0,10}", pontosLista[i].W) + " ]" + "\n";
       }
+      retorno += bBox.ToString();
       return (retorno);
     }
 #endif

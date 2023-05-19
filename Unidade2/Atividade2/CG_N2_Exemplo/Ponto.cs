@@ -7,7 +7,7 @@ namespace gcgcg
 {
   internal class Ponto : Objeto
   {
-    public Ponto(Objeto paiRef, Ponto4D pto) : base(paiRef)
+    public Ponto(Objeto paiRef, ref char _rotulo, Ponto4D pto) : base(paiRef, ref _rotulo)
     {
       PrimitivaTipo = PrimitiveType.Points;
       PrimitivaTamanho = 20;
@@ -30,7 +30,6 @@ namespace gcgcg
       retorno = "__ Objeto Ponto _ Tipo: " + PrimitivaTipo + " _ Tamanho: " + PrimitivaTamanho + "\n";
       retorno += base.ImprimeToString();
       return (retorno);
-
     }
 #endif
 

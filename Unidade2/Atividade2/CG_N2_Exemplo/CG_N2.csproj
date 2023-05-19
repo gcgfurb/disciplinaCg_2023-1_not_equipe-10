@@ -4,6 +4,7 @@
     <RootNamespace>gcgcg</RootNamespace>
     <AssemblyName>CG_N2</AssemblyName>
     <TargetFramework>net6.0</TargetFramework>
+    <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
 
   <ItemGroup>

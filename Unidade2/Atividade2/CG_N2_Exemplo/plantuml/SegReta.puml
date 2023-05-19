@@ -1,0 +1,7 @@
+@startuml
+class SegReta {
+    + SegReta(paiRef:Objeto, ptoIni:Ponto4D, ptoFim:Ponto4D)
+    + <<override>> ToString() : string
+}
+Objeto <|-- SegReta
+@enduml

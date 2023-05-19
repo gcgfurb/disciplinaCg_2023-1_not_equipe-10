@@ -1,0 +1,7 @@
+@startuml
+class Poligono {
+    + Poligono(paiRef:Objeto, pontosPoligono:List<Ponto4D>)
+    + <<override>> ToString() : string
+}
+Objeto <|-- Poligono
+@enduml
