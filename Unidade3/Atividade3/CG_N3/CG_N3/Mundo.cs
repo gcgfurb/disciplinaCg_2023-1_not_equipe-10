@@ -22,6 +22,10 @@ namespace gcgcg
         private char rotuloAtual = '?';
         private Objeto objetoSelecionado = null;
 
+        private Funcao funcaoAtiva = Funcao.DEFAULT;
+        private bool selecionadoSegueMouse = false;
+        private int indiceVerticeSelecionado = -1;
+
         private readonly float[] _sruEixos =
         {
       -0.5f,  0.0f,  0.0f, /* X- */      0.5f,  0.0f,  0.0f, /* X+ */
@@ -160,87 +164,43 @@ namespace gcgcg
             else
             {
                 if (input.IsKeyPressed(Keys.G))
-                {
                     mundo.GrafocenaImprimir("");
-                }
-                else
-                {
-                    if (input.IsKeyPressed(Keys.P))
-                    {
-                        System.Console.WriteLine(objetoSelecionado.ToString());
-                    }
-                    else
-                    {
-                        if (input.IsKeyPressed(Keys.M))
-                            objetoSelecionado.MatrizImprimir();
-                        else
-                        {
-                            //TODO: não está atualizando a BBox com as transformações geométricas
-                            if (input.IsKeyPressed(Keys.I))
-                                objetoSelecionado.MatrizAtribuirIdentidade();
-                            else
-                            {
-                                if (input.IsKeyPressed(Keys.Left))
-                                    objetoSelecionado.MatrizTranslacaoXYZ(-0.05, 0, 0);
-                                else
-                                {
-                                    if (input.IsKeyPressed(Keys.Right))
-                                        objetoSelecionado.MatrizTranslacaoXYZ(0.05, 0, 0);
-                                    else
-                                    {
-                                        if (input.IsKeyPressed(Keys.Up))
-                                            objetoSelecionado.MatrizTranslacaoXYZ(0, 0.05, 0);
-                                        else
-                                        {
-                                            if (input.IsKeyPressed(Keys.Down))
-                                                objetoSelecionado.MatrizTranslacaoXYZ(0, -0.05, 0);
-                                            else
-                                            {
-                                                if (input.IsKeyPressed(Keys.PageUp))
-                                                    objetoSelecionado.MatrizEscalaXYZ(2, 2, 2);
-                                                else
-                                                {
-                                                    if (input.IsKeyPressed(Keys.PageDown))
-                                                        objetoSelecionado.MatrizEscalaXYZ(0.5, 0.5, 0.5);
-                                                    else
-                                                    {
-                                                        if (input.IsKeyPressed(Keys.Home))
-                                                            objetoSelecionado.MatrizEscalaXYZBBox(0.5, 0.5, 0.5);
-                                                        else
-                                                        {
-                                                            if (input.IsKeyPressed(Keys.End))
-                                                                objetoSelecionado.MatrizEscalaXYZBBox(2, 2, 2);
-                                                            else
-                                                            {
-                                                                if (input.IsKeyPressed(Keys.D1))
-                                                                    objetoSelecionado.MatrizRotacao(10);
-                                                                else
-                                                                {
-                                                                    if (input.IsKeyPressed(Keys.D2))
-                                                                        objetoSelecionado.MatrizRotacao(-10);
-                                                                    else
-                                                                    {
-                                                                        if (input.IsKeyPressed(Keys.D3))
-                                                                            objetoSelecionado.MatrizRotacaoZBBox(10);
-                                                                        else
-                                                                        {
-                                                                            if (input.IsKeyPressed(Keys.D4))
-                                                                                objetoSelecionado.MatrizRotacaoZBBox(-10);
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                if (input.IsKeyPressed(Keys.P))
+                    System.Console.WriteLine(objetoSelecionado.ToString());
+                if (input.IsKeyPressed(Keys.M))
+                    objetoSelecionado.MatrizImprimir();
+                //TODO: não está atualizando a BBox com as transformações geométricas
+                if (input.IsKeyPressed(Keys.I))
+                    objetoSelecionado.MatrizAtribuirIdentidade();
+                if (input.IsKeyPressed(Keys.Left))
+                    objetoSelecionado.MatrizTranslacaoXYZ(-0.05, 0, 0);
+                if (input.IsKeyPressed(Keys.Right))
+                    objetoSelecionado.MatrizTranslacaoXYZ(0.05, 0, 0);
+                if (input.IsKeyPressed(Keys.Up))
+                    objetoSelecionado.MatrizTranslacaoXYZ(0, 0.05, 0);
+                if (input.IsKeyPressed(Keys.Down))
+                    objetoSelecionado.MatrizTranslacaoXYZ(0, -0.05, 0);
+                if (input.IsKeyPressed(Keys.PageUp))
+                    objetoSelecionado.MatrizEscalaXYZ(2, 2, 2);
+                if (input.IsKeyPressed(Keys.PageDown))
+                    objetoSelecionado.MatrizEscalaXYZ(0.5, 0.5, 0.5);
+                if (input.IsKeyPressed(Keys.Home))
+                    objetoSelecionado.MatrizEscalaXYZBBox(0.5, 0.5, 0.5);
+                if (input.IsKeyPressed(Keys.End))
+                    objetoSelecionado.MatrizEscalaXYZBBox(2, 2, 2);
+                if (input.IsKeyPressed(Keys.D1))
+                    objetoSelecionado.MatrizRotacao(10);
+                if (input.IsKeyPressed(Keys.D2))
+                    objetoSelecionado.MatrizRotacao(-10);
+                if (input.IsKeyPressed(Keys.D3))
+                    objetoSelecionado.MatrizRotacaoZBBox(10);
+                if (input.IsKeyPressed(Keys.D4))
+                    objetoSelecionado.MatrizRotacaoZBBox(-10);
+
+                //Tarefas
+                if (input.IsKeyPressed(Keys.KeyPad1))
+                    AtivarFuncaoCriarPoligono();
+
             }
             #endregion
 
@@ -248,18 +208,59 @@ namespace gcgcg
             var mouse = MouseState;
             // Mouse FIXME: inverte eixo Y, fazer NDC para proporção em tela
             Vector2i janela = this.ClientRectangle.Size;
+            var deltaX = (mouse.X - janela.X / 2) / (janela.X / 2);
+            var deltaY = -((mouse.Y - janela.X / 2) / (janela.Y / 2));
 
             if (mouse.IsButtonPressed(MouseButton.Left))
             {
-                var deltaX = (mouse.X - janela.X / 2) / (janela.X / 2);
-                var deltaY = -((mouse.Y - janela.X / 2) / (janela.Y / 2));
-
-                objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(deltaX, deltaY));
-                objetoSelecionado.PrimitivaTipo = PrimitiveType.Points;
-                objetoSelecionado.PrimitivaTamanho = 20;
+                switch (funcaoAtiva)
+                {
+                    case Funcao.MEXER_VERTICE:
+                        funcaoAtiva = Funcao.DEFAULT;
+                        indiceVerticeSelecionado = -1;
+                        break;
+                    default:
+                        if (!selecionadoSegueMouse && objetoSelecionado != null)
+                        {
+                            funcaoAtiva = Funcao.MEXER_VERTICE;
+                            indiceVerticeSelecionado = objetoSelecionado.BuscarOVerticeMaisProximo(deltaX, deltaY);
+                        }
+                        break;
+                }
             }
+
+            switch (funcaoAtiva)
+            {
+                case Funcao.DEFAULT:
+                    break;
+                case Funcao.CRIAR_POLIGONO:
+                    AtualizarObjetoSelecionadoParaOMouse(deltaX, deltaY);
+                    break;
+                case Funcao.MEXER_VERTICE:
+                    if (indiceVerticeSelecionado > -1)
+                    {
+                        AtualizarObjetoSelecionadoParaOMouse(deltaX, deltaY, indiceVerticeSelecionado);
+                    }
+                    break;
+                default:
+                    break;
+            }
+
             #endregion
 
+        }
+
+        private void AtualizarObjetoSelecionadoParaOMouse(float deltaX, float deltaY, int indicePonto = 0)
+        {
+            objetoSelecionado.PontosAlterar(new Ponto4D(deltaX, deltaY, 0), indicePonto);
+            objetoSelecionado.ObjetoAtualizar();
+        }
+
+        private void AtivarFuncaoCriarPoligono()
+        {
+            funcaoAtiva = Funcao.CRIAR_POLIGONO;
+            objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(0, 0));
+            objetoSelecionado.PrimitivaTipo = PrimitiveType.Points;
         }
 
         protected override void OnResize(ResizeEventArgs e)
@@ -313,5 +314,12 @@ namespace gcgcg
         }
 #endif
 
+    }
+
+    public enum Funcao
+    {
+        DEFAULT,
+        MEXER_VERTICE,
+        CRIAR_POLIGONO
     }
 }
