@@ -103,13 +103,15 @@ namespace gcgcg
       objetoSelecionado = new Poligono(objetoSelecionado, ref rotuloNovo, pontosPoligonoTriangulo);
       #endregion
       #region declara um objeto neto ao polígono
-      objetoSelecionado = new Circulo(objetoSelecionado, ref rotuloNovo, 0.05, new Ponto4D(0.50,0.50));
+      objetoSelecionado = new Circulo(objetoSelecionado, ref rotuloNovo, 0.05, new Ponto4D(0.50, 0.50));
       objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
       #endregion
 
       #region Objeto: retângulo  
       objetoSelecionado = new Retangulo(mundo, ref rotuloNovo, new Ponto4D(-0.25, 0.25), new Ponto4D(-0.75, 0.75));
-m
+      objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
+      #endregion
+
       // #region Objeto: segmento de reta  
       // objetoSelecionado = new SegReta(mundo, ref rotuloNovo, new Ponto4D(-0.5, -0.5), new Ponto4D());
       // #endregion
