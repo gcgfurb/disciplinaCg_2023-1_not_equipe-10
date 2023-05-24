@@ -13,7 +13,7 @@ namespace gcgcg
     private Ponto[] ptosControle = new Ponto[4];
     private Poligono poliedroControle;
 
-    private readonly int splineQtdPtoMax = 10;  // FIXME: definir o tamanho de bezierMatrizPeso
+    private readonly int splineQtdPtoMax = 10;  // TODO: definir o tamanho de bezierMatrizPeso
     private int splineQtdPto = 10;
     public void SplineQtdPto(int inc)
     {
@@ -39,7 +39,6 @@ namespace gcgcg
 
     public Spline(Objeto paiRef, ref char _rotulo) : base(paiRef, ref _rotulo)
     {
-      // FIXME: usando objetoSelecionado.GrafocenaToString(); lista 8 ptosControle 2 PoliedroControle !!!
       PontosControle();
       PoliedroControle();
 

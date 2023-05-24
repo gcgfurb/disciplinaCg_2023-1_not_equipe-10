@@ -31,7 +31,7 @@ namespace gcgcg
 
     // BBox do objeto
     private BBox bBox = new BBox();
-    public BBox Bbox()  // FIXME: readonly
+    public BBox Bbox()  // TODO: readonly
     {
       return bBox;
     }
@@ -52,7 +52,7 @@ namespace gcgcg
     public Objeto(Objeto paiRef, ref char _rotulo, Objeto objetoFilho = null)
     {
       this.paiRef = paiRef;
-      rotulo = _rotulo = Utilitario.charProximo(_rotulo);
+      rotulo = _rotulo = Utilitario.CharProximo(_rotulo);
       if (paiRef != null)
       {
         ObjetoNovo(objetoFilho);
@@ -95,7 +95,7 @@ namespace gcgcg
       GL.EnableVertexAttribArray(0);
     }
 
-    public void Desenhar()
+    public void Desenhar(Transformacao4D matrizGrafo)
     {
 #if CG_OpenGL && !CG_DirectX
       GL.PointSize(primitivaTamanho);
@@ -104,8 +104,8 @@ namespace gcgcg
 
       if (paiRef != null)
       {
-        matrizGlobal = paiRef.matriz.MultiplicarMatriz(matriz); //FIXME: não funciona para Netos (recurssivamente)
-        _shaderObjeto.SetMatrix4("transform", matrizGlobal.ObterDadosOpenTK());
+        matrizGrafo = matrizGrafo.MultiplicarMatriz(matriz);
+        _shaderObjeto.SetMatrix4("transform", matrizGrafo.ObterDadosOpenTK());
         _shaderObjeto.Use();
         GL.DrawArrays(primitivaTipo, 0, pontosLista.Count);
 #elif CG_DirectX && !CG_OpenGL
@@ -116,7 +116,7 @@ namespace gcgcg
       }
       for (var i = 0; i < objetosLista.Count; i++)
       {
-        objetosLista[i].Desenhar();
+        objetosLista[i].Desenhar(matrizGrafo);
       }
     }
 
@@ -135,11 +135,13 @@ namespace gcgcg
     public void PontosAdicionar(Ponto4D pto)
     {
       pontosLista.Add(pto);
+      ObjetoAtualizar();
     }
 
     public void PontosAlterar(Ponto4D pto, int posicao)
     {
       pontosLista[posicao] = pto;
+      ObjetoAtualizar();
     }
 
     #endregion
@@ -165,14 +167,14 @@ namespace gcgcg
 
     public Objeto GrafocenaBuscaProximo(Objeto objetoAtual)
     {
-      objetoAtual = GrafocenaBusca(Utilitario.charProximo(objetoAtual.rotulo));
+      objetoAtual = GrafocenaBusca(Utilitario.CharProximo(objetoAtual.rotulo));
       if (objetoAtual != null)
       {
         return objetoAtual;
       }
       else
       {
-        return GrafocenaBusca(Utilitario.charProximo('@'));
+        return GrafocenaBusca(Utilitario.CharProximo('@'));
       }
     }
 

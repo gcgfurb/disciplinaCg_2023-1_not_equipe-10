@@ -32,9 +32,13 @@ namespace gcgcg
     private int _vertexBufferObject_sruEixos;
     private int _vertexArrayObject_sruEixos;
 
+    private Shader _shaderBranca;
     private Shader _shaderVermelha;
     private Shader _shaderVerde;
     private Shader _shaderAzul;
+    private Shader _shaderCiano;
+    private Shader _shaderMagenta;
+    private Shader _shaderAmarela;
 
     public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
            : base(gameWindowSettings, nativeWindowSettings)
@@ -73,6 +77,16 @@ namespace gcgcg
 
       GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+      #region Cores
+      _shaderBranca = new Shader("Shaders/shader.vert", "Shaders/shaderBranca.frag");
+      _shaderVermelha = new Shader("Shaders/shader.vert", "Shaders/shaderVermelha.frag");
+      _shaderVerde = new Shader("Shaders/shader.vert", "Shaders/shaderVerde.frag");
+      _shaderAzul = new Shader("Shaders/shader.vert", "Shaders/shaderAzul.frag");
+      _shaderCiano = new Shader("Shaders/shader.vert", "Shaders/shaderCiano.frag");
+      _shaderMagenta = new Shader("Shaders/shader.vert", "Shaders/shaderMagenta.frag");
+      _shaderAmarela = new Shader("Shaders/shader.vert", "Shaders/shaderAmarela.frag");
+      #endregion
+
       #region Eixos: SRU  
       _vertexBufferObject_sruEixos = GL.GenBuffer();
       GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject_sruEixos);
@@ -81,9 +95,6 @@ namespace gcgcg
       GL.BindVertexArray(_vertexArrayObject_sruEixos);
       GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
       GL.EnableVertexAttribArray(0);
-      _shaderVermelha = new Shader("Shaders/shader.vert", "Shaders/shaderVermelha.frag");
-      _shaderVerde = new Shader("Shaders/shader.vert", "Shaders/shaderVerde.frag");
-      _shaderAzul = new Shader("Shaders/shader.vert", "Shaders/shaderAzul.frag");
       #endregion
 
       #region Objeto: polígono qualquer  
@@ -125,7 +136,7 @@ namespace gcgcg
 #if CG_Privado
       // #region Objeto: circulo  
       // objetoSelecionado = new Circulo(mundo, ref rotuloNovo, 0.2, new Ponto4D());
-      // objetoSelecionado.shaderCor = new Shader("Shaders/shader.vert", "Shaders/shaderAmarela.frag");
+      // objetoSelecionado.shaderCor = _shaderAmarela
       // #endregion
 
       // #region Objeto: SrPalito  
@@ -148,7 +159,7 @@ namespace gcgcg
 #if CG_Gizmo      
       Sru3D();
 #endif
-      mundo.Desenhar();
+      mundo.Desenhar(new Transformacao4D());
       SwapBuffers();
     }
 
@@ -156,109 +167,77 @@ namespace gcgcg
     {
       base.OnUpdateFrame(e);
 
-      // ☞ 396c2670-8ce0-4aff-86da-0f58cd8dcfdc
+      // ☞ 396c2670-8ce0-4aff-86da-0f58cd8dcfdc   TODO: forma otimizada para teclado.
       #region Teclado
       var input = KeyboardState;
       if (input.IsKeyDown(Keys.Escape))
-      {
         Close();
-      }
-      else
+      if (input.IsKeyPressed(Keys.Space))
       {
-        if (input.IsKeyPressed(Keys.Space))
-        {
-          objetoSelecionado = mundo.GrafocenaBuscaProximo(objetoSelecionado);
-        }
-        else
-        {
-          if (input.IsKeyPressed(Keys.G))
-          {
-            mundo.GrafocenaImprimir("");
-          }
-          else
-          {
-            if (input.IsKeyPressed(Keys.P))
-            {
-              System.Console.WriteLine(objetoSelecionado.ToString());
-            }
-            else
-            {
-              if (input.IsKeyPressed(Keys.M))
-                objetoSelecionado.MatrizImprimir();
-              else
-              {
-                //TODO: não está atualizando a BBox com as transformações geométricas
-                if (input.IsKeyPressed(Keys.I))
-                  objetoSelecionado.MatrizAtribuirIdentidade();
-                else
-                {
-                  if (input.IsKeyPressed(Keys.Left))
-                    objetoSelecionado.MatrizTranslacaoXYZ(-0.05, 0, 0);
-                  else
-                  {
-                    if (input.IsKeyPressed(Keys.Right))
-                      objetoSelecionado.MatrizTranslacaoXYZ(0.05, 0, 0);
-                    else
-                    {
-                      if (input.IsKeyPressed(Keys.Up))
-                        objetoSelecionado.MatrizTranslacaoXYZ(0, 0.05, 0);
-                      else
-                      {
-                        if (input.IsKeyPressed(Keys.Down))
-                          objetoSelecionado.MatrizTranslacaoXYZ(0, -0.05, 0);
-                        else
-                        {
-                          if (input.IsKeyPressed(Keys.PageUp))
-                            objetoSelecionado.MatrizEscalaXYZ(2, 2, 2);
-                          else
-                          {
-                            if (input.IsKeyPressed(Keys.PageDown))
-                              objetoSelecionado.MatrizEscalaXYZ(0.5, 0.5, 0.5);
-                            else
-                            {
-                              if (input.IsKeyPressed(Keys.Home))
-                                objetoSelecionado.MatrizEscalaXYZBBox(0.5, 0.5, 0.5);
-                              else
-                              {
-                                if (input.IsKeyPressed(Keys.End))
-                                  objetoSelecionado.MatrizEscalaXYZBBox(2, 2, 2);
-                                else
-                                {
-                                  if (input.IsKeyPressed(Keys.D1))
-                                    objetoSelecionado.MatrizRotacao(10);
-                                  else
-                                  {
-                                    if (input.IsKeyPressed(Keys.D2))
-                                      objetoSelecionado.MatrizRotacao(-10);
-                                    else
-                                    {
-                                      if (input.IsKeyPressed(Keys.D3))
-                                        objetoSelecionado.MatrizRotacaoZBBox(10);
-                                      else
-                                      {
-                                        if (input.IsKeyPressed(Keys.D4))
-                                          objetoSelecionado.MatrizRotacaoZBBox(-10);
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+        objetoSelecionado.shaderCor = _shaderBranca;
+        objetoSelecionado = mundo.GrafocenaBuscaProximo(objetoSelecionado);
+        objetoSelecionado.shaderCor = _shaderAmarela;
       }
+      if (input.IsKeyPressed(Keys.G))
+        mundo.GrafocenaImprimir("");
+      if (input.IsKeyPressed(Keys.P))
+        System.Console.WriteLine(objetoSelecionado.ToString());
+      if (input.IsKeyPressed(Keys.M))
+        objetoSelecionado.MatrizImprimir();
+      //TODO: não está atualizando a BBox com as transformações geométricas
+      if (input.IsKeyPressed(Keys.I))
+        objetoSelecionado.MatrizAtribuirIdentidade();
+      if (input.IsKeyPressed(Keys.Left))
+        objetoSelecionado.MatrizTranslacaoXYZ(-0.05, 0, 0);
+      if (input.IsKeyPressed(Keys.Right))
+        objetoSelecionado.MatrizTranslacaoXYZ(0.05, 0, 0);
+      if (input.IsKeyPressed(Keys.Up))
+        objetoSelecionado.MatrizTranslacaoXYZ(0, 0.05, 0);
+      if (input.IsKeyPressed(Keys.Down))
+        objetoSelecionado.MatrizTranslacaoXYZ(0, -0.05, 0);
+      if (input.IsKeyPressed(Keys.PageUp))
+        objetoSelecionado.MatrizEscalaXYZ(2, 2, 2);
+      if (input.IsKeyPressed(Keys.PageDown))
+        objetoSelecionado.MatrizEscalaXYZ(0.5, 0.5, 0.5);
+      if (input.IsKeyPressed(Keys.Home))
+        objetoSelecionado.MatrizEscalaXYZBBox(0.5, 0.5, 0.5);
+      if (input.IsKeyPressed(Keys.End))
+        objetoSelecionado.MatrizEscalaXYZBBox(2, 2, 2);
+      if (input.IsKeyPressed(Keys.D1))
+        objetoSelecionado.MatrizRotacao(10);
+      if (input.IsKeyPressed(Keys.D2))
+        objetoSelecionado.MatrizRotacao(-10);
+      if (input.IsKeyPressed(Keys.D3))
+        objetoSelecionado.MatrizRotacaoZBBox(10);
+      if (input.IsKeyPressed(Keys.D4))
+        objetoSelecionado.MatrizRotacaoZBBox(-10);
       #endregion
 
       #region  Mouse
-      // ☞ cc6efca2-aba0-4a49-b49e-d8e937028d26
+
+      if (MouseState.IsButtonPressed(MouseButton.Left))
+      {
+        System.Console.WriteLine("MouseState.IsButtonPressed(MouseButton.Left)");
+        System.Console.WriteLine("__ Valores do Espaço de Tela");
+        System.Console.WriteLine("Vector2 mousePosition: " + MousePosition);
+        System.Console.WriteLine("Vector2i windowSize: " + Size);
+      }
+      if (MouseState.IsButtonDown(MouseButton.Right))
+      {
+        System.Console.WriteLine("MouseState.IsButtonDown(MouseButton.Right)");
+
+        int janelaLargura = Size.X;
+        int janelaAltura = Size.Y;
+        Ponto4D mousePonto = new Ponto4D(MousePosition.X, MousePosition.Y);
+        Ponto4D sruPonto = Utilitario.NDC_TelaSRU(janelaLargura, janelaAltura, mousePonto);
+
+        objetoSelecionado.PontosAlterar(sruPonto, 0);
+      }
+      if (MouseState.IsButtonReleased(MouseButton.Right))
+      {
+        System.Console.WriteLine("MouseState.IsButtonReleased(MouseButton.Right)");
+      }
+
       #endregion
 
     }
@@ -281,9 +260,13 @@ namespace gcgcg
       GL.DeleteBuffer(_vertexBufferObject_sruEixos);
       GL.DeleteVertexArray(_vertexArrayObject_sruEixos);
 
+      GL.DeleteProgram(_shaderBranca.Handle);
       GL.DeleteProgram(_shaderVermelha.Handle);
       GL.DeleteProgram(_shaderVerde.Handle);
       GL.DeleteProgram(_shaderAzul.Handle);
+      GL.DeleteProgram(_shaderCiano.Handle);
+      GL.DeleteProgram(_shaderMagenta.Handle);
+      GL.DeleteProgram(_shaderAmarela.Handle);
 
       base.OnUnload();
     }
