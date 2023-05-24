@@ -222,7 +222,7 @@ namespace gcgcg
         System.Console.WriteLine("Vector2 mousePosition: " + MousePosition);
         System.Console.WriteLine("Vector2i windowSize: " + Size);
       }
-      if (MouseState.IsButtonDown(MouseButton.Right))
+      if (MouseState.IsButtonDown(MouseButton.Right) && objetoSelecionado != null)
       {
         System.Console.WriteLine("MouseState.IsButtonDown(MouseButton.Right)");
 
