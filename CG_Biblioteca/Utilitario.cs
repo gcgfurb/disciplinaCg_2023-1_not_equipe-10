@@ -1,6 +1,6 @@
 using System;
 
-namespace gcgcg
+namespace CG_Biblioteca
 {
   public abstract class Utilitario
   {

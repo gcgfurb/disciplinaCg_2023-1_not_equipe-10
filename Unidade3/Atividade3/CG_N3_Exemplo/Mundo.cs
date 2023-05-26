@@ -97,31 +97,31 @@ namespace gcgcg
       GL.EnableVertexAttribArray(0);
       #endregion
 
-      // #region Objeto: polígono qualquer  
-      // List<Ponto4D> pontosPoligonoBandeira = new List<Ponto4D>();
-      // pontosPoligonoBandeira.Add(new Ponto4D(0.25, 0.25));
-      // pontosPoligonoBandeira.Add(new Ponto4D(0.75, 0.25));
-      // pontosPoligonoBandeira.Add(new Ponto4D(0.75, 0.75));
-      // pontosPoligonoBandeira.Add(new Ponto4D(0.50, 0.50));
-      // pontosPoligonoBandeira.Add(new Ponto4D(0.25, 0.75));
-      // objetoSelecionado = new Poligono(mundo, ref rotuloNovo, pontosPoligonoBandeira);
-      // #endregion
-      // #region declara um objeto filho ao polígono
-      // List<Ponto4D> pontosPoligonoTriangulo = new List<Ponto4D>();
-      // pontosPoligonoTriangulo.Add(new Ponto4D(0.50, 0.50));
-      // pontosPoligonoTriangulo.Add(new Ponto4D(0.75, 0.75));
-      // pontosPoligonoTriangulo.Add(new Ponto4D(0.25, 0.75));
-      // objetoSelecionado = new Poligono(objetoSelecionado, ref rotuloNovo, pontosPoligonoTriangulo);
-      // #endregion
-      // #region declara um objeto neto ao polígono
-      // objetoSelecionado = new Circulo(objetoSelecionado, ref rotuloNovo, 0.05, new Ponto4D(0.50, 0.50));
-      // objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
-      // #endregion
+      #region Objeto: polígono qualquer  
+      List<Ponto4D> pontosPoligonoBandeira = new List<Ponto4D>();
+      pontosPoligonoBandeira.Add(new Ponto4D(0.25, 0.25));
+      pontosPoligonoBandeira.Add(new Ponto4D(0.75, 0.25));
+      pontosPoligonoBandeira.Add(new Ponto4D(0.75, 0.75));
+      pontosPoligonoBandeira.Add(new Ponto4D(0.50, 0.50));
+      pontosPoligonoBandeira.Add(new Ponto4D(0.25, 0.75));
+      objetoSelecionado = new Poligono(mundo, ref rotuloNovo, pontosPoligonoBandeira);
+      #endregion
+      #region declara um objeto filho ao polígono
+      List<Ponto4D> pontosPoligonoTriangulo = new List<Ponto4D>();
+      pontosPoligonoTriangulo.Add(new Ponto4D(0.50, 0.50));
+      pontosPoligonoTriangulo.Add(new Ponto4D(0.75, 0.75));
+      pontosPoligonoTriangulo.Add(new Ponto4D(0.25, 0.75));
+      objetoSelecionado = new Poligono(objetoSelecionado, ref rotuloNovo, pontosPoligonoTriangulo);
+      #endregion
+      #region declara um objeto neto ao polígono
+      objetoSelecionado = new Circulo(objetoSelecionado, ref rotuloNovo, 0.05, new Ponto4D(0.50, 0.50));
+      objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
+      #endregion
 
-      // #region Objeto: retângulo  
-      // objetoSelecionado = new Retangulo(mundo, ref rotuloNovo, new Ponto4D(-0.25, 0.25), new Ponto4D(-0.75, 0.75));
-      // objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
-      // #endregion
+      #region Objeto: retângulo  
+      objetoSelecionado = new Retangulo(mundo, ref rotuloNovo, new Ponto4D(-0.25, 0.25), new Ponto4D(-0.75, 0.75));
+      objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
+      #endregion
 
       // #region Objeto: segmento de reta  
       // objetoSelecionado = new SegReta(mundo, ref rotuloNovo, new Ponto4D(-0.5, -0.5), new Ponto4D());
