@@ -26,6 +26,32 @@ namespace CG_Biblioteca
     {
       return (raio * Math.Cos(Math.PI * 45 / 180.0));
     }
-    
+
+    public static bool Dentro(BBox bBox, Ponto4D pto)
+    {
+      if ((pto.X >= bBox.obterMenorX && pto.X <= bBox.obterMaiorX) &&
+          (pto.Y >= bBox.obterMenorY && pto.Y <= bBox.obterMaiorY) &&
+          (pto.Z >= bBox.obterMenorZ && pto.Z <= bBox.obterMaiorZ))
+      {
+        return true;
+      }
+      return false;
+    }
+
+    public static double distanciaQuadrado(Ponto4D ptoA, Ponto4D ptoB)
+    {
+      return (
+        Math.Pow((ptoB.X - ptoA.X), 2) +
+          Math.Pow((ptoB.Y - ptoA.Y), 2)
+      );
+    }
+
+    public static double distancia(Ponto4D ptoA, Ponto4D ptoB)
+    {
+      return (
+        Math.Sqrt(distanciaQuadrado(ptoA,ptoB))
+      );
+    }
+
   }
 }

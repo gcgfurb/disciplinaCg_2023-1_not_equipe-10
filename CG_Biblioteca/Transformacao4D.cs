@@ -118,9 +118,6 @@ namespace CG_Biblioteca
     }
 
     //TODO: tentar usar Const
-    // public Ponto4D MultiplicarPonto(in Ponto4D pto)
-    // {
-    //   pto.X = 3;
     public Ponto4D MultiplicarPonto(Ponto4D pto)
     {
       Ponto4D pointResult = new Ponto4D(
