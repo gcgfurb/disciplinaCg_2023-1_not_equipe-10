@@ -92,6 +92,11 @@ namespace gcgcg
             GL.BindVertexArray(_vertexArrayObject);
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
             GL.EnableVertexAttribArray(0);
+
+            foreach (var item in objetosLista)
+            {
+                item.ObjetoAtualizar();
+            }
         }
 
         // FIXME: falta para Transformações Geométricas PushMatrix e PopMatrix - Grafo de Cena
@@ -325,6 +330,64 @@ namespace gcgcg
             var resultado = Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2);
             resultado = resultado < 0 ? resultado * -1 : resultado;
             return (float)resultado;
+        }
+
+        internal Objeto SelecionarPoligono(Ponto4D ponto4D)
+        {
+            // Checar VBOX
+            foreach (var objeto in objetosLista)
+            {
+                var minX = double.MaxValue;
+                var minY = double.MaxValue;
+                var maxX = double.MinValue;
+                var maxY = double.MinValue;
+
+                foreach (var vertice in objeto.pontosLista)
+                {
+                    if (vertice.X < minX) minX = vertice.X;
+                    if (vertice.X > maxX) maxX = vertice.X;
+                    if (vertice.Y < minY) minY = vertice.Y;
+                    if (vertice.Y > maxY) maxY = vertice.Y;
+
+                    if (minX <= ponto4D.X && maxX >= ponto4D.X && minY <= ponto4D.Y && maxY >= ponto4D.Y)
+                    {
+                        var t = -1d;
+                        var yi = ponto4D.Y;
+                        var qntdInterseccao = 0;
+
+                        for (int i = 0; i < objeto.pontosLista.Count; i++)
+                        {
+                            var ponto = objeto.pontosLista[i];
+                            var nextPonto = (objeto.pontosLista.Count - 1 == i ? objeto.pontosLista[0] : objeto.pontosLista[i + 1]);
+                            var y1 = ponto.Y;
+                            var y2 = nextPonto.Y;
+                            t = (yi - y1) / (y2 - y1);
+
+                            var x1 = ponto.X;
+                            var x2 = nextPonto.X;
+                            var xi = x1 + (x2 - x1) * t;
+
+                            if (0 < t && t < 1 && xi > ponto4D.X) qntdInterseccao++;
+                        }
+
+                        if (qntdInterseccao % 2 == 1) return objeto;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        internal void RemoverObjeto(Objeto objetoSelecionado)
+        {
+            objetosLista.Remove(objetoSelecionado);
+        }
+
+        internal void RemoverVerticeMaisProximo(float deltaX, float deltaY)
+        {
+            var indice = BuscarOVerticeMaisProximo(deltaX, deltaY);
+            pontosLista.RemoveAt(indice);
+            ObjetoAtualizar();
         }
     }
 }
