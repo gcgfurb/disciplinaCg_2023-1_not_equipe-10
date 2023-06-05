@@ -24,6 +24,7 @@ namespace gcgcg
 
         public static Funcao funcaoAtiva = Funcao.DEFAULT;
         private int indiceVerticeSelecionado = -1;
+        private bool desenharBbox = false;
 
         private readonly float[] _sruEixos =
         {
@@ -32,12 +33,23 @@ namespace gcgcg
        0.0f,  0.0f, -0.5f, /* Z- */      0.0f,  0.0f,  0.5f, /* Z+ */
     };
 
+        private readonly float[] _bboxTeste =
+        {
+           0.25f, 0.25f,  0.0f, /* X- */      0.75f, 0.25f,  0.0f, /* Y- */
+           0.75f,  0.75f,  0.0f, /* X+ */     0.25f,  0.75f,  0.0f, /* Y+ */
+        };
+
         private int _vertexBufferObject_sruEixos;
         private int _vertexArrayObject_sruEixos;
 
         private Shader _shaderVermelha;
         private Shader _shaderVerde;
         private Shader _shaderAzul;
+        private Shader _shaderAmarela;
+
+
+        private int _vertexBufferObject;
+        private int _vertexArrayObject;
 
         public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
                : base(gameWindowSettings, nativeWindowSettings)
@@ -87,7 +99,9 @@ namespace gcgcg
             _shaderVermelha = new Shader("Shaders/shader.vert", "Shaders/shaderVermelha.frag");
             _shaderVerde = new Shader("Shaders/shader.vert", "Shaders/shaderVerde.frag");
             _shaderAzul = new Shader("Shaders/shader.vert", "Shaders/shaderAzul.frag");
+            _shaderAmarela = new Shader("Shaders/shader.vert", "Shaders/shaderAmarela.frag");
             #endregion
+
 
 
             #region     ATIVIDADE 2
@@ -264,6 +278,7 @@ namespace gcgcg
                     case Funcao.SELECIONAR_POLIGONO:
                         var objeto = mundo.SelecionarPoligono(new Ponto4D(deltaX, deltaY));
                         objetoSelecionado = objeto == null ? objetoSelecionado : objeto;
+                        desenharBbox = objetoSelecionado != null;
                         break;
                 }
             }
@@ -306,7 +321,6 @@ namespace gcgcg
         private void AtivarFuncaoSelecionarPoligono()
         {
             funcaoAtiva = Funcao.SELECIONAR_POLIGONO;
-            Console.WriteLine("Função de SELECIONAR POLÍGONO ativida");
         }
 
         private void AtualizarObjetoSelecionadoParaOMouse(float deltaX, float deltaY, int indicePonto = 0)
@@ -319,6 +333,7 @@ namespace gcgcg
         {
             funcaoAtiva = Funcao.DEFAULT;
             indiceVerticeSelecionado = -1;
+            desenharBbox = false;
         }
 
         protected override void OnResize(ResizeEventArgs e)
@@ -342,6 +357,7 @@ namespace gcgcg
             GL.DeleteProgram(_shaderVermelha.Handle);
             GL.DeleteProgram(_shaderVerde.Handle);
             GL.DeleteProgram(_shaderAzul.Handle);
+            GL.DeleteProgram(_shaderAmarela.Handle);
 
             base.OnUnload();
         }
@@ -364,6 +380,34 @@ namespace gcgcg
             _shaderAzul.SetMatrix4("transform", transform);
             _shaderAzul.Use();
             GL.DrawArrays(PrimitiveType.Lines, 4, 2);
+
+
+            if (objetoSelecionado != null)
+            {
+                var bboxSelecionada = objetoSelecionado.Bbox();
+                var bboxArray = new float[]
+                {
+                    (float)bboxSelecionada.obterMenorX, (float)bboxSelecionada.obterMenorY, 0,        (float)bboxSelecionada.obterMaiorX, (float)bboxSelecionada.obterMenorY, 0,
+                    (float)bboxSelecionada.obterMaiorX, (float)bboxSelecionada.obterMaiorY, 0,        (float)bboxSelecionada.obterMenorX, (float)bboxSelecionada.obterMaiorY, 0
+                };
+                _vertexBufferObject = GL.GenBuffer();
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
+                GL.BufferData(BufferTarget.ArrayBuffer, bboxArray.Length * sizeof(float), bboxArray, BufferUsageHint.StaticDraw);
+                _vertexArrayObject = GL.GenVertexArray();
+                GL.BindVertexArray(_vertexArrayObject);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+                GL.EnableVertexAttribArray(0);
+            }
+
+
+            if (desenharBbox)
+            {
+                GL.BindVertexArray(_vertexArrayObject);
+                // EixoX
+                _shaderAmarela.SetMatrix4("transform", transform);
+                _shaderAmarela.Use();
+                GL.DrawArrays(PrimitiveType.LineLoop, 0, 4);
+            }
 #elif CG_DirectX && !CG_OpenGL
       Console.WriteLine(" .. Coloque aqui o seu código em DirectX");
 #elif (CG_DirectX && CG_OpenGL) || (!CG_DirectX && !CG_OpenGL)
