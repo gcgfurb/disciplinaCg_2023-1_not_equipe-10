@@ -9,6 +9,16 @@ namespace gcgcg
 {
     internal class Cubo : Objeto
     {
+        int A = 0;
+        int B = 1;
+        int C = 2;
+        int D = 3;
+        int E = 4;
+        int F = 5;
+        int G = 6;
+        int H = 7;
+
+
         Ponto4D[] vertices;
         int[] indices;
         Vector3[] normals;
@@ -34,49 +44,26 @@ namespace gcgcg
 
             indices = new int[]
             {
-               0, 1, 2, 3, // front face
-               3, 7, 5, 2, // right face
-               2, 5, 4, 1, // top face
-               1, 0, 6, 4, // left face
-               4, 5, 7, 6, // back face
-               6, 7, 3, 0, // bottom face  
+               1, // Front-top-left
+               2, // Front-top-right
+               0, // Front-bottom-left
+               3, // Front-bottom-right
+               7, // Back-bottom-right
+               2, // Front-top-right
+               5, // Back-top-right
+               1, // Front-top-left
+               4, // Back-top-left
+               0, // Front-bottom-left
+               6, // Back-bottom-left
+               7, // Back-bottom-right
+               4, // Back-top-left
+               5  // Back-top-right
             };
-
-            // normals = new Vector3[]
-            // {
-            //   new Vector3(-1.0f, -1.0f,  1.0f),
-            //   new Vector3( 1.0f, -1.0f,  1.0f),
-            //   new Vector3( 1.0f,  1.0f,  1.0f),
-            //   new Vector3(-1.0f,  1.0f,  1.0f),
-            //   new Vector3(-1.0f, -1.0f, -1.0f),
-            //   new Vector3( 1.0f, -1.0f, -1.0f),
-            //   new Vector3( 1.0f,  1.0f, -1.0f),
-            //   new Vector3(-1.0f,  1.0f, -1.0f),
-            // };
-
-            // colors = new int[]
-            // {
-            //   ColorToRgba32(Color.DarkRed),
-            //   ColorToRgba32(Color.DarkRed),
-            //   ColorToRgba32(Color.Gold),
-            //   ColorToRgba32(Color.Gold),
-            //   ColorToRgba32(Color.DarkRed),
-            //   ColorToRgba32(Color.DarkRed),
-            //   ColorToRgba32(Color.Gold),
-            //   ColorToRgba32(Color.Gold),
-            // };
-
-            // Sentido horário
-            for (int i = 0; i < indices.Length; i+=4)
+            
+            for (int i = 0; i < indices.Length; i ++)
             {
                 var verticeA = vertices[indices[i]];
-                var verticeB = vertices[indices[i + 1]];
-                var verticeC = vertices[indices[i + 2]];
-                var verticeD = vertices[indices[i + 3]];
                 base.PontosAdicionar(verticeA);
-                base.PontosAdicionar(verticeB);
-                base.PontosAdicionar(verticeC);
-                base.PontosAdicionar(verticeD);
             }
             Atualizar();
         }
