@@ -41,6 +41,11 @@ namespace gcgcg
         private Shader _shaderAmarela;
 
         private Camera _camera;
+        private bool _controlaCamera;
+        private List<Ponto4D> _listaPontos = new List<Ponto4D>();
+        private int _posicaoCamera = 0;
+        private Ponto4D _lastPosicaoMouse;
+        private Vector3 _posicaoOrigem = new Vector3(0, 0, 0);
 
         public Mundo(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
                : base(gameWindowSettings, nativeWindowSettings)
@@ -139,6 +144,11 @@ namespace gcgcg
             #endregion
 
             _camera = new Camera(Vector3.UnitZ, Size.X / (float)Size.Y);
+            for (int i = 0; i < 360; i++)
+            {
+                var ponto = Matematica.GerarPtosCirculo(i+90, 1);
+                _listaPontos.Add(new Ponto4D(ponto.X, 0, ponto.Y));
+            }
 
         }
 
@@ -230,13 +240,44 @@ namespace gcgcg
 
             #region  Mouse
 
-            if (MouseState.IsButtonPressed(MouseButton.Left))
+            Ponto4D posicaoMouse = new Ponto4D(MousePosition.X, MousePosition.Y);
+            if(_lastPosicaoMouse != null && _controlaCamera)
             {
-                System.Console.WriteLine("MouseState.IsButtonPressed(MouseButton.Left)");
-                System.Console.WriteLine("__ Valores do Espaço de Tela");
-                System.Console.WriteLine("Vector2 mousePosition: " + MousePosition);
-                System.Console.WriteLine("Vector2i windowSize: " + Size);
+                if (posicaoMouse.X > _lastPosicaoMouse.X)
+                    _posicaoCamera++;
+                else if (posicaoMouse.X < _lastPosicaoMouse.X)
+                    _posicaoCamera--;
+
+                if (_posicaoCamera < 0)
+                    _posicaoCamera = 359;
+                else if (_posicaoCamera > 359)
+                    _posicaoCamera = 0;
+
+                _camera.Position = new Vector3((float)_listaPontos[_posicaoCamera].X, (float)_listaPontos[_posicaoCamera].Y, (float)_listaPontos[_posicaoCamera].Z);
+                _lastPosicaoMouse = posicaoMouse;
+                Matrix4 view = Matrix4.LookAt(_camera.Position, _posicaoOrigem, _camera.Up);
+                _camera.Yaw = _posicaoCamera+270;
             }
+            else
+            {
+                _lastPosicaoMouse = posicaoMouse;
+            }
+
+            if (MouseState.IsButtonDown(MouseButton.Left))
+            {
+                _controlaCamera = true;
+            }
+            if (MouseState.IsButtonReleased(MouseButton.Left))
+            {
+                _controlaCamera = false;
+            }
+            //if (MouseState.IsButtonPressed(MouseButton.Left))
+            //{
+            //    System.Console.WriteLine("MouseState.IsButtonPressed(MouseButton.Left)");
+            //    System.Console.WriteLine("__ Valores do Espaço de Tela");
+            //    System.Console.WriteLine("Vector2 mousePosition: " + MousePosition);
+            //    System.Console.WriteLine("Vector2i windowSize: " + Size);
+            //}
             if (MouseState.IsButtonDown(MouseButton.Right) && objetoSelecionado != null)
             {
                 System.Console.WriteLine("MouseState.IsButtonDown(MouseButton.Right)");
